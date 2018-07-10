@@ -1,0 +1,226 @@
+@import url('https://fonts.googleapis.com/css?family=Wendy+One');
+
+/*
+Anchor effect Luke Meyrick
+link: https://codepen.io/lukemeyrick/pen/apZOWm
+*/
+
+// Variables 
+$bg-machine: #063CF1;
+$bg-footer: #063CF1;
+$footer-color: #fff;
+$bg-drum-machine: #27424B;
+$title-color: #ccc;
+$bg-drum-pad: #06AEE4;
+$bg-display: #333;
+$display-color: #ccc;
+$drum-shadow: rgba(0, 0, 0, 0.44);
+$display-border-color: black;
+$machine-size: 300px;
+$thick: 3px;
+$pad: 0.7em;
+$extra: calc(#{$pad} * 1.2);
+$color: #ccc;
+
+// Mixins 
+@mixin setSizeAndRaius($width, $height, $radius) {
+  width: $width;
+  height: $height;
+  border-radius: $radius;
+}
+
+@mixin setDisplayFlex($justify-content, $align-items) {
+  display: flex;
+  justify-content: $justify-content;
+  align-items: $align-items;
+}
+
+*,
+*::after,
+*::before {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html, body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  @include setSizeAndRaius(100vw, 100vh, 0);
+  font-family: 'Wendy One',  sans-serif;
+}
+
+footer {
+  width: 100vw;
+  background: $bg-footer;
+  @include setDisplayFlex(center, center);
+  a {
+    color: $footer-color;
+    padding: $pad $extra;
+    margin-bottom: $pad;
+    display: inline-block;
+    border: $thick solid transparent;
+    position: relative;
+    font-size: 1.5em;
+    cursor: pointer;
+    letter-spacing: 0.07em;
+    text-decoration: none;
+    .text {
+      // padding: 0 0.3em;
+      font-family: proxima-nova, monospace;
+      transform: translate3d(0, $pad, 0);
+      display: block;
+      transition: transform 0.4s cubic-bezier(.2, 0, 0, 1) 0.4s;
+    }
+    &:after {
+      position: absolute;
+      content: '';
+      bottom: -$thick;
+      left: $extra;
+      right: $extra;
+      height: $thick;
+      background: $color; // z-index: -1;
+      transition: transform 0.8s cubic-bezier(1, 0, .37, 1) 0.2s, right 0.2s cubic-bezier(.04, .48, 0, 1) 0.6s, left 0.4s cubic-bezier(.04, .48, 0, 1) 0.6s;
+      transform-origin: left;
+    }
+  }
+
+  .line {
+    position: absolute;
+    background: $color;
+    &.-right,
+    &.-left {
+      width: $thick;
+      bottom: -$thick;
+      top: -$thick;
+      transform: scale3d(1, 0, 1);
+    }
+    &.-top,
+    &.-bottom {
+      height: $thick;
+      left: -$thick;
+      right: -$thick;
+      transform: scale3d(0, 1, 1);
+    }
+    &.-right {
+      right: -$thick;
+      transition: transform 0.1s cubic-bezier(1, 0, .65, 1.01) 0.23s;
+      transform-origin: top;
+    }
+    &.-top {
+      top: -$thick;
+      transition: transform 0.08s linear 0.43s;
+      transform-origin: left;
+    }
+    &.-left {
+      left: -$thick;
+      transition: transform 0.08s linear 0.51s;
+      transform-origin: bottom;
+    }
+    &.-bottom {
+      bottom: -$thick;
+      transition: transform 0.3s cubic-bezier(1, 0, .65, 1.01);
+      transform-origin: right;
+    }
+  }
+
+  a:hover,
+  a:active {
+    .text {
+      transform: translate3d(0, 0, 0);
+      transition: transform 0.6s cubic-bezier(.2, 0, 0, 1) 0.4s;
+    }
+    &:after {
+      transform: scale3d(0, 1, 1);
+      right: -$thick;
+      left: -$thick;
+      transform-origin: right;
+      transition: transform 0.2s cubic-bezier(1, 0, .65, 1.01) 0.17s, right 0.2s cubic-bezier(1, 0, .65, 1.01), left 0s 0.3s;
+    }
+    .line {
+      transform: scale3d(1, 1, 1);
+      &.-right {
+        transition: transform 0.1s cubic-bezier(1, 0, .65, 1.01) 0.2s;
+        transform-origin: bottom;
+      }
+      &.-top {
+        transition: transform 0.08s linear 0.4s;
+        transform-origin: right;
+      }
+      &.-left {
+        transition: transform 0.08s linear 0.48s;
+        transform-origin: top;
+      }
+      &.-bottom {
+        transition: transform 0.5s cubic-bezier(0, .53, .29, 1) 0.56s;
+        transform-origin: left;
+      }
+    }
+  }
+}
+
+.grid {
+  @include setSizeAndRaius(100vw, 100vh, 0);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto;
+  background: $bg-machine;
+
+  #drum-machine {
+    justify-self: center;
+    align-self: center;
+    width: $machine-size;
+    height: $machine-size;
+    background: $bg-drum-machine;
+    border-radius: 5%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-template-areas: "nav nav nav" 
+      "drup-pad drup-pad drup-pad" 
+      "drup-pad drup-pad drup-pad" 
+      "drup-pad drup-pad drup-pad"
+      "display display display";
+    justify-items: center;
+    align-items: center;
+    box-shadow: 0 5px 0 0 $drum-shadow;
+    user-select: none;
+    
+    .title {
+      grid-area: nav;
+      margin: 10px 10px;
+      color: $title-color;
+      @include setSizeAndRaius(95%, 80%, 0);
+      @include setDisplayFlex(center, center);
+    }
+    #display {
+      grid-area: display;
+      @include setSizeAndRaius(90%, 80%, 10px);
+      @include setDisplayFlex(center, center);
+      background: $bg-display;
+      color: $display-color;
+      border: 5px solid $display-border-color;
+    }
+    .drum-pad {
+      @include setSizeAndRaius(80%, 80%, 5%);
+      @include setDisplayFlex(center, center);
+      background: $bg-drum-pad;
+      box-shadow: 0 5px 0 0 $drum-shadow;      
+    }
+    .drum-active {
+      animation: down .1s linear;
+    }
+  }
+}
+
+@keyframes down {
+  0%,
+  100% {
+    box-shadow: 0 5px 0 0 $drum-shadow;
+    transform: translateY(0);
+  }
+  50% {
+    box-shadow: 0 0 0 0;
+    transform: translateY(5px);
+  }
+}
